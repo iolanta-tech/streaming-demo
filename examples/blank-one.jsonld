@@ -1,0 +1,14 @@
+{
+  "@context":
+    {"@vocab":"https://schema.org/"},
+  "@type": "Observation",
+  "name": "Temperature",
+  "observationAbout": {
+    "name": "Room A\nBedroom"
+  },
+  "observationDate":
+    "2026-10-17T10:00:00Z",
+  "value": 20,
+  "unitText": "°C",
+  "@id": "_:reading"
+}
