@@ -1,0 +1,19 @@
+{
+  "name": "streaming-demo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node render.mjs",
+    "example": "node examples/read-jsonld.mjs",
+    "verify": "python3 verify-examples.py && node verify-examples.mjs"
+  },
+  "dependencies": {
+    "@mermaid-js/tiny": "12.2.0",
+    "highlight.js": "11.12.0",
+    "js-yaml": "5.5.0",
+    "jsonld-streaming-parser": "5.0.2"
+  },
+  "devDependencies": {
+    "webidl2": "24.5.0"
+  }
+}
