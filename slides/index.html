@@ -1,0 +1,508 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>JSON-LD &amp; Streaming</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="shower/themes/ribbon/styles/index.css">
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="shower list">
+    <header class="caption">
+        <h1>JSON-LD &amp; Streaming</h1>
+        <p>Anatoly Scherbakov · JSON-LD Community Group</p>
+    </header>
+
+    <section class="slide clear" id="title">
+        <h2 class="shout">JSON-LD<br>&amp; Streaming</h2>
+        <p class="byline">Anatoly Scherbakov · JSON-LD Community Group</p>
+        <aside>A discussion of streaming use cases and document processing in
+            JSON-LD and YAML-LD.</aside>
+    </section>
+
+    <section class="slide streaming-jsonld-example" id="streaming-json-ld">
+        <h2>Streaming JSON-LD</h2>
+        <p class="example-caption">Read one JSON-LD document → RDF quad events</p>
+        <pre class="code-example"><code class="hljs" id="streaming-json-ld-code" data-source="examples/read-jsonld.mjs"><span class="hljs-keyword">import</span> { createReadStream } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;node:fs&quot;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">JsonLdParser</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;jsonld-streaming-parser&quot;</span>;
+
+<span class="hljs-keyword">const</span> input = <span class="hljs-keyword">new</span> <span class="hljs-title function_">URL</span>(<span class="hljs-string">&quot;./temperature.jsonld&quot;</span>, <span class="hljs-keyword">import</span>.<span class="hljs-property">meta</span>.<span class="hljs-property">url</span>);
+<span class="hljs-keyword">const</span> quads = <span class="hljs-title function_">createReadStream</span>(input).<span class="hljs-title function_">pipe</span>(
+  <span class="hljs-keyword">new</span> <span class="hljs-title class_">JsonLdParser</span>({ <span class="hljs-attr">streamingProfile</span>: <span class="hljs-literal">true</span> })
+);
+<span class="hljs-keyword">for</span> <span class="hljs-keyword">await</span> (<span class="hljs-keyword">const</span> quad <span class="hljs-keyword">of</span> quads) {
+  <span class="hljs-keyword">if</span> (quad.<span class="hljs-property">predicate</span>.<span class="hljs-property">value</span> === <span class="hljs-string">&quot;https://schema.org/value&quot;</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(quad.<span class="hljs-property">object</span>.<span class="hljs-property">value</span>); <span class="hljs-comment">// 20</span>
+  }
+}</code></pre>
+        <p class="example-caption implementation-links"><a href="https://github.com/rubensworks/jsonld-streaming-parser.js"><img class="github-mark" src="github-mark.svg" alt="GitHub"> rubensworks/jsonld-streaming-parser.js</a> · <a href="https://www.w3.org/TR/json-ld11-streaming/">Specification</a></p>
+        <aside>
+            <p>The <a href="https://www.w3.org/TR/json-ld11-streaming/">Note</a>
+                was published on 7 May 2020. Required key ordering places context
+                and type before other properties; early identifiers are recommended.
+                It addresses incremental RDF conversion inside one document.</p>
+            <p>Implementations include the JavaScript
+                <a href="https://github.com/rubensworks/jsonld-streaming-parser.js">parser</a>
+                and <a href="https://github.com/rubensworks/jsonld-streaming-serializer.js">serializer</a>,
+                plus <a href="https://docs.rs/oxjsonld/latest/oxjsonld/">OxJSON-LD</a>.
+                These implementations are existing work; extending this profile is
+                outside this CG discussion’s proposed work.</p>
+            <p>The visible example uses jsonld-streaming-parser 5.0.2, not a
+                standardized JsonLdProcessor streaming method. The input file contains
+                one complete JSON-LD document. The async iterator receives RDF/JS
+                quads; this example prints its object literal, 20. Its inline
+                context avoids fetching a remote context.</p>
+            <p>This scope boundary concerns this CG discussion, not the Working Group’s
+                charter. Incremental conversion and document sequences can coexist.
+                Buffering limitations remain under discussion in
+                <a href="https://github.com/w3c/json-ld-streaming/issues/54"><img class="github-mark" src="github-mark.svg" alt="GitHub"> w3c/json-ld-streaming#54</a>
+                and <a href="https://github.com/w3c/json-ld-streaming/issues/69"><img class="github-mark" src="github-mark.svg" alt="GitHub"> w3c/json-ld-streaming#69</a>.</p>
+        </aside>
+        
+    </section>
+    <section class="slide streaming-jsonld-example" id="streaming-json-ld-out-of-scope">
+        <h2>Streaming JSON-LD</h2>
+        <p class="example-caption">Read one JSON-LD document → RDF quad events</p>
+        <pre class="code-example"><code class="hljs" id="streaming-json-ld-out-of-scope-code" data-source="examples/read-jsonld.mjs"><span class="hljs-keyword">import</span> { createReadStream } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;node:fs&quot;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">JsonLdParser</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;jsonld-streaming-parser&quot;</span>;
+
+<span class="hljs-keyword">const</span> input = <span class="hljs-keyword">new</span> <span class="hljs-title function_">URL</span>(<span class="hljs-string">&quot;./temperature.jsonld&quot;</span>, <span class="hljs-keyword">import</span>.<span class="hljs-property">meta</span>.<span class="hljs-property">url</span>);
+<span class="hljs-keyword">const</span> quads = <span class="hljs-title function_">createReadStream</span>(input).<span class="hljs-title function_">pipe</span>(
+  <span class="hljs-keyword">new</span> <span class="hljs-title class_">JsonLdParser</span>({ <span class="hljs-attr">streamingProfile</span>: <span class="hljs-literal">true</span> })
+);
+<span class="hljs-keyword">for</span> <span class="hljs-keyword">await</span> (<span class="hljs-keyword">const</span> quad <span class="hljs-keyword">of</span> quads) {
+  <span class="hljs-keyword">if</span> (quad.<span class="hljs-property">predicate</span>.<span class="hljs-property">value</span> === <span class="hljs-string">&quot;https://schema.org/value&quot;</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(quad.<span class="hljs-property">object</span>.<span class="hljs-property">value</span>); <span class="hljs-comment">// 20</span>
+  }
+}</code></pre>
+        <p class="example-caption implementation-links"><a href="https://github.com/rubensworks/jsonld-streaming-parser.js"><img class="github-mark" src="github-mark.svg" alt="GitHub"> rubensworks/jsonld-streaming-parser.js</a> · <a href="https://www.w3.org/TR/json-ld11-streaming/">Specification</a></p>
+        <aside>
+            <p>The <a href="https://www.w3.org/TR/json-ld11-streaming/">Note</a>
+                was published on 7 May 2020. Required key ordering places context
+                and type before other properties; early identifiers are recommended.
+                It addresses incremental RDF conversion inside one document.</p>
+            <p>Implementations include the JavaScript
+                <a href="https://github.com/rubensworks/jsonld-streaming-parser.js">parser</a>
+                and <a href="https://github.com/rubensworks/jsonld-streaming-serializer.js">serializer</a>,
+                plus <a href="https://docs.rs/oxjsonld/latest/oxjsonld/">OxJSON-LD</a>.
+                These implementations are existing work; extending this profile is
+                outside this CG discussion’s proposed work.</p>
+            <p>The visible example uses jsonld-streaming-parser 5.0.2, not a
+                standardized JsonLdProcessor streaming method. The input file contains
+                one complete JSON-LD document. The async iterator receives RDF/JS
+                quads; this example prints its object literal, 20. Its inline
+                context avoids fetching a remote context.</p>
+            <p>This scope boundary concerns this CG discussion, not the Working Group’s
+                charter. Incremental conversion and document sequences can coexist.
+                Buffering limitations remain under discussion in
+                <a href="https://github.com/w3c/json-ld-streaming/issues/54"><img class="github-mark" src="github-mark.svg" alt="GitHub"> w3c/json-ld-streaming#54</a>
+                and <a href="https://github.com/w3c/json-ld-streaming/issues/69"><img class="github-mark" src="github-mark.svg" alt="GitHub"> w3c/json-ld-streaming#69</a>.</p>
+        </aside>
+        
+        <svg class="scope-cross" viewBox="0 0 1024 576" aria-label="Outside this presentation’s scope" role="img">
+            <path d="M 85 65 L 940 510 M 940 65 L 85 510"/>
+        </svg>
+        
+    </section>
+
+    <section class="slide clear chapter-title" id="rdf-messages-chapter">
+        <h2 class="shout">RDF Messages</h2>
+        <p class="chapter-thanks">Thanks <a href="https://github.com/pietercolpaert">Pieter Colpaert</a> &amp; <a href="https://ostrzyciel.eu/">Piotr Sowiński</a><br><span>For bringing our attention to these issues</span></p>
+    </section>
+
+    <section class="slide" id="rdf-messages">
+        <p class="slide-source"><a href="https://w3c-cg.github.io/rsp/spec/messages">RDF Messages</a> · <a href="https://schema.org/Observation">Schema.org vocabulary</a></p>
+        <div class="columns two">
+            <div>
+                <h3>Message 1</h3>
+                <pre class="code-example"><code class="hljs" id="message-one-code" data-source="examples/message-one.jsonld"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;@context&quot;</span><span class="hljs-punctuation">:</span>
+    <span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;@vocab&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;https://schema.org/&quot;</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;@type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Observation&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Temperature&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;observationAbout&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Room A<span class="json-escape">\n</span>Bedroom&quot;</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;observationDate&quot;</span><span class="hljs-punctuation">:</span>
+    <span class="hljs-string">&quot;2026-10-17T10:00:00Z&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;value&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">20</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;unitText&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;°C&quot;</span>
+<span class="hljs-punctuation">}</span></code></pre>
+            </div>
+            <div>
+                <h3>Message 2</h3>
+                <pre class="code-example"><code class="hljs" id="message-two-code" data-source="examples/message-two.jsonld"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;@context&quot;</span><span class="hljs-punctuation">:</span>
+    <span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;@vocab&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;https://schema.org/&quot;</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;@type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Observation&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Temperature&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;observationAbout&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Room A<span class="json-escape">\n</span>Bedroom&quot;</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;observationDate&quot;</span><span class="hljs-punctuation">:</span>
+    <span class="hljs-string">&quot;2026-10-17T10:01:00Z&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;value&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">21</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;unitText&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;°C&quot;</span>
+<span class="hljs-punctuation">}</span></code></pre>
+            </div>
+        </div>
+        <p class="note">Each message carries an <a href="https://www.w3.org/TR/rdf11-concepts/#section-dataset">RDF dataset</a>.</p>
+        <aside>
+            <p>The <a href="https://w3c-cg.github.io/rsp/spec/messages#rdf-messages">RDF Messages living document</a>
+                defines a message as an RDF dataset interpreted as one communicative act.
+                A message stream is an ordered, potentially unbounded sequence.
+                These payloads report bedroom temperatures at 10:00 and 10:01 UTC.
+                Each payload is a Schema.org Observation with an observationDate.</p>
+            <p>This is the RDF Messages proposal, not a W3C Recommendation.</p>
+        </aside>
+    </section>
+
+    <section class="slide" id="rdf-message-backends">
+        <h2>Transports</h2>
+        <p class="slide-source"><a href="https://w3c-cg.github.io/rsp/spec/messages#stream-discovery">RDF Messages</a></p>
+        <div class="transport-cards">
+            <div class="transport-card"><a href="https://w3c-cg.github.io/rsp/spec/messages#sse-live-streams">Server-Sent Events</a><br><a href="https://w3c-cg.github.io/rsp/spec/messages#websocket-live-streams">WebSockets</a></div>
+            <div class="transport-card"><a href="https://w3c-cg.github.io/rsp/spec/messages#kafka-live-streams">Kafka</a><br><a href="https://w3c-cg.github.io/rsp/spec/messages#mqtt-live-streams">MQTT 5</a></div>
+            <div class="transport-card"><a href="https://w3c-cg.github.io/rsp/spec/messages#message-broker-live-streams">AMQP · NATS · Pulsar</a></div>
+            <div class="transport-card"><a href="https://w3c-cg.github.io/rsp/spec/messages#jelly-grpc">Jelly gRPC</a></div>
+        </div>
+        <aside>The native protocol messages provide the RDF message boundaries.
+            These are transport integrations described by the living draft.</aside>
+    </section>
+
+    <section class="slide" id="rdf-message-serializations">
+        <h2>RDF Message serializations</h2>
+        <p class="slide-source"><a href="https://w3c-cg.github.io/rsp/spec/messages#rdf-message-logs-serialization">RDF Messages draft</a></p>
+        <table class="serialization-comparison">
+            <thead><tr><th scope="col">Format</th><th scope="col">Message framing</th></tr></thead>
+            <tbody>
+                <tr><th scope="row"><a href="https://w3c-cg.github.io/rsp/spec/messages#turtle">N-Triples, N-Quads,<br>Turtle, TriG</a></th><td><code>MESSAGE</code> between messages</td></tr>
+                <tr><th scope="row"><a href="https://w3c-cg.github.io/rsp/spec/messages#json-ld">JSON-LD (NDJSON-LD)</a></th><td>One JSON object per line</td></tr>
+                <tr><th scope="row"><a href="https://w3c-cg.github.io/rsp/spec/messages#yaml-ld">YAML-LD</a></th><td><code>---</code> between documents</td></tr>
+                <tr><th scope="row"><a href="https://w3c-cg.github.io/rsp/spec/messages#rdf-xml">RDF/XML</a></th><td>One XML document per line</td></tr>
+                <tr><th scope="row"><a href="https://w3c-cg.github.io/rsp/spec/messages#other-formats">Jelly</a></th><td><code>RdfStreamFrame</code></td></tr>
+            </tbody>
+        </table>
+        <aside>These are proposals and integrations described by the living draft.
+            The proposed MESSAGE syntax requires updated text RDF parsers.
+            Turtle and TriG also permit the @message directive.
+            JSON-LD and YAML-LD remain under discussion. Jelly already groups data into frames.</aside>
+    </section>
+
+
+    <section class="slide" id="json-stream-formats">
+        <h2>JSON stream formats</h2>
+        <table class="format-comparison">
+            <colgroup><col style="width:20%"><col style="width:12%"><col style="width:17%"><col style="width:12%"><col style="width:39%"></colgroup>
+            <thead><tr><th scope="col">Format</th><th scope="col">Extension</th><th scope="col">Framing</th><th scope="col">Multiline</th><th scope="col">Media type</th></tr></thead>
+            <tbody>
+                <tr>
+                    <th scope="row"><a href="https://github.com/ndjson/ndjson-spec#33-mediatype-and-file-extensions">NDJSON</a></th>
+                    <td><code>.ndjson</code></td>
+                    <td><code>JSON <span class="control-character" role="img" aria-label="Line feed">␊</span></code></td>
+                    <td><span class="unsupported" role="img" aria-label="Multiline JSON not supported">✗</span></td>
+                    <td><code>application/x-ndjson</code><br><small>Recommended</small></td>
+                </tr>
+                <tr>
+                    <th scope="row"><a href="https://jsonlines.org/">JSON Lines</a></th>
+                    <td><code>.jsonl</code></td>
+                    <td><code>JSON <span class="control-character" role="img" aria-label="Line feed">␊</span></code></td>
+                    <td><span class="unsupported" role="img" aria-label="Multiline JSON not supported">✗</span></td>
+                    <td><code>application/jsonl</code><br><small>Suggested; not standardized</small></td>
+                </tr>
+                <tr>
+                    <th scope="row"><a href="https://www.rfc-editor.org/rfc/rfc7464.html">JSON Text Sequences</a><br><small>RFC 7464</small></th>
+                    <td></td>
+                    <td><code><span class="control-character" role="img" aria-label="Record separator">␞</span> JSON <span class="control-character" role="img" aria-label="Line feed">␊</span></code></td>
+                    <td><span class="supported" role="img" aria-label="Multiline JSON supported">✓</span></td>
+                    <td><a href="https://www.iana.org/assignments/media-types/application/json-seq"><code>application/json-seq</code></a><br><small>Registered with IANA</small></td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="example-caption"><code class="control-character">␞</code> RS <code>0x1E</code> · <code class="control-character">␊</code> LF <code>0x0A</code> · <code class="control-character">␍</code> CR <code>0x0D</code><br>
+            NDJSON and JSON Lines also accept <code class="control-character">␍␊</code> (CRLF).</p>
+        <aside>
+            <p><a href="https://github.com/ndjson/ndjson-spec">NDJSON</a> and
+                <a href="https://jsonlines.org/">JSON Lines</a> use UTF-8 and
+                place one complete JSON value on each line. They have separate
+                descriptions and conventions, but the same basic line framing.
+                Neither requires a record to be a JSON object.</p>
+            <p><a href="https://www.rfc-editor.org/rfc/rfc7464.html">RFC 7464</a>
+                specifies JSON Text Sequences with media type application/json-seq.
+                Each encoded JSON text has a preceding ASCII Record Separator
+                (RS, 0x1E) and a following Line Feed (LF, 0x0A). The JSON is UTF-8
+                and can span multiple lines or be a top-level scalar.</p>
+            <p>The table shows the usual encoded record shape. JSON Lines permits
+                its final value without a trailing LF; NDJSON requires a trailing
+                newline. All three support top-level JSON scalars and UTF-8. NDJSON
+                recommends application/x-ndjson; JSON Lines has no standardized
+                media type; RFC 7464 registers application/json-seq.</p>
+            <p>These formats define record framing. JSON-LD context lifetime,
+                blank-node scope, and message interpretation require additional
+                processing rules.</p>
+        </aside>
+    </section>
+
+    <section class="slide" id="state-of-the-art">
+        <h2>NDJSON-LD</h2>
+        <p class="slide-source"><a href="https://github.com/json-ld/ndjson-ld"><img class="github-mark" src="github-mark.svg" alt="GitHub"> json-ld/ndjson-ld</a> · <a href="https://w3c-cg.github.io/rsp/spec/messages#json-ld">RDF Messages draft §2.2</a></p>
+        <pre class="code-example"><code class="hljs" id="ndjson-code" data-source="examples/messages-with-null.ndjsonld"><span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;@context&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;@vocab&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;https://schema.org/&quot;</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="line-feed" role="img" aria-label="Line feed byte">␊</span>
+<span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;@type&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;Observation&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;Temperature&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;observationAbout&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;Room A<span class="json-escape">\n</span>Bedroom&quot;</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;observationDate&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;2026-10-17T10:00:00Z&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;value&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">20</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;unitText&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;°C&quot;</span><span class="hljs-punctuation">}</span><span class="line-feed" role="img" aria-label="Line feed byte">␊</span>
+<span class="hljs-literal"><span class="hljs-keyword">null</span></span><span class="line-feed" role="img" aria-label="Line feed byte">␊</span>
+<span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;@type&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;Observation&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;Temperature&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;observationAbout&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;Room A<span class="json-escape">\n</span>Bedroom&quot;</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;observationDate&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;2026-10-17T10:01:00Z&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;value&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">21</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;unitText&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;°C&quot;</span><span class="hljs-punctuation">}</span><span class="line-feed" role="img" aria-label="Line feed byte">␊</span></code></pre>
+        <p class="example-caption line-feed-legend"><code>␊</code> marks a real LF byte; <code class="json-escape">\n</code> inside a string is an escaped newline.<br><span class="proposal-note">Proposed <code>null</code> record · the current profile requires objects.</span></p>
+        <aside>
+            <p>The context-only
+                record updates context state without yielding a message. The proposed middle null record would represent an empty message between the two canonical bedroom observations. The current RDF Messages draft requires object-valued lines and uses {} for an empty message; accepting null would need a profile change in addition to the JSON-LD grammar proposal. A JSON string
+                contains a backslash-n escape, not a physical record boundary. Visible
+                LF symbols annotate real line-feed bytes and are not source characters. These are the RDF Messages
+                draft profile rules; the name NDJSON-LD alone does not establish them.</p>
+            <p>The <a href="https://github.com/json-ld/ndjson-ld">CG specification</a>
+                remains unfinished. <a href="https://rdf4j.org/javadoc/latest/org/eclipse/rdf4j/rio/RDFFormat.html#NDJSONLD">RDF4J</a>
+                also implements NDJSON-LD, with different processing: records are
+                aggregated into one dataset. It does not implement this message profile.</p>
+        </aside>
+    </section>
+
+
+    <section class="slide" id="jsonld-null-proposal">
+        <h2><code>null</code></h2>
+        <div class="null-comparison">
+            <div class="null-algorithm">
+                <h3>Expansion algorithm</h3>
+                <p class="null-mapping"><code>null</code> → <code>[]</code></p>
+                <p>The algorithm returns <code>null</code>; <code>expand()</code> normalizes the result to <code>[]</code>.</p>
+            </div>
+            <div class="null-grammar">
+                <h3>Document grammar</h3>
+                <blockquote>A JSON-LD document MUST be a single node object, … or an array of zero or more node objects.</blockquote>
+                <p>Standalone <code>null</code> is excluded.</p>
+                <p>Proposed change:<br><a href="https://github.com/w3c/json-ld-syntax/pull/502"><img class="github-mark" src="github-mark.svg" alt="GitHub"> w3c/json-ld-syntax#502</a></p>
+            </div>
+        </div>
+        <p class="slide-source"><a href="https://www.w3.org/TR/json-ld11-api/#expansion-algorithm">Expansion</a> · <a href="https://www.w3.org/TR/json-ld11-api/#dom-jsonldprocessor-expand">Result normalization</a> · <a href="https://www.w3.org/TR/json-ld11/#json-ld-grammar">Grammar §9</a></p>
+    </section>
+
+    <section class="slide clear chapter-title" id="yaml-ld-chapter">
+        <h2 class="shout">YAML-LD</h2>
+    </section>
+
+    <section class="slide" id="yaml-document-streams">
+        <h2>YAML document streams</h2>
+        <p class="slide-source"><a href="https://yaml.org/spec/1.2.2/#912-document-markers">YAML 1.2.2 · document markers</a></p>
+        <pre class="code-example"><code class="hljs" data-source="examples/empty-document-readings.yamlld"><span class="hljs-attr">&quot;@context&quot;:</span> {<span class="hljs-string">&quot;@vocab&quot;</span><span class="hljs-string">:&quot;https://schema.org/&quot;</span>}
+<span class="hljs-attr">&quot;@type&quot;:</span> <span class="hljs-string">&quot;Observation&quot;</span>
+<span class="hljs-attr">name:</span> <span class="hljs-string">&quot;Temperature&quot;</span>
+<span class="hljs-attr">observationAbout:</span> {<span class="hljs-string">&quot;name&quot;</span><span class="hljs-string">:&quot;Room</span> <span class="hljs-string">A<span class="json-escape">\n</span>Bedroom&quot;</span>}
+<span class="hljs-attr">observationDate:</span> <span class="hljs-string">&quot;2026-10-17T10:00:00Z&quot;</span>
+<span class="hljs-attr">value:</span> <span class="hljs-number">20</span>
+<span class="hljs-attr">unitText:</span> <span class="hljs-string">&quot;°C&quot;</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">&quot;@context&quot;:</span> {<span class="hljs-string">&quot;@vocab&quot;</span><span class="hljs-string">:&quot;https://schema.org/&quot;</span>}
+<span class="hljs-attr">&quot;@type&quot;:</span> <span class="hljs-string">&quot;Observation&quot;</span>
+<span class="hljs-attr">name:</span> <span class="hljs-string">&quot;Temperature&quot;</span>
+<span class="hljs-attr">observationAbout:</span> {<span class="hljs-string">&quot;name&quot;</span><span class="hljs-string">:&quot;Room</span> <span class="hljs-string">A<span class="json-escape">\n</span>Bedroom&quot;</span>}
+<span class="hljs-attr">observationDate:</span> <span class="hljs-string">&quot;2026-10-17T10:01:00Z&quot;</span>
+<span class="hljs-attr">value:</span> <span class="hljs-number">21</span>
+<span class="hljs-attr">unitText:</span> <span class="hljs-string">&quot;°C&quot;</span></code></pre>
+        </section>
+
+    <section class="slide" id="null-roots">
+        <h2>Empty YAML documents</h2>
+        <p class="slide-source"><a href="https://yaml.org/spec/1.2.2/#914-explicit-documents">YAML 1.2.2 §9.1.4 · Empty documents</a> · <a href="https://yaml.org/spec/1.2.2/#1032-tag-resolution">§10.3.2 · Core Schema</a></p>
+        <p>YAML’s Core Schema resolves an empty document to <code>null</code>.</p>
+        <aside>An explicit YAML document may have an empty root node. Under the Core Schema, its empty plain scalar resolves to tag:yaml.org,2002:null.</aside>
+    </section>
+
+    <section class="slide" id="extract-all-scripts">
+        <h2><code>extractAllScripts</code></h2>
+        <p class="slide-source"><a href="https://www.w3.org/TR/json-ld11-api/#process-html">JSON-LD 1.1</a> · <a href="https://w3c.github.io/yaml-ld/#stream-processing">YAML-LD draft</a></p>
+        <table class="processing-comparison">
+            <thead><tr><th scope="col"></th><th scope="col">JSON-LD 1.1</th><th scope="col">Current YAML-LD draft</th></tr></thead>
+            <tbody>
+                <tr><th scope="row">Input</th><td>JSON-LD scripts in HTML</td><td>Documents in a YAML stream</td></tr>
+                <tr><th scope="row"><code>false</code> default</th><td>First eligible script</td><td>First YAML document</td></tr>
+                <tr><th scope="row"><code>true</code></th><td>Chain script content into an array</td><td>Chain constructed documents into an array</td></tr>
+                <tr><th scope="row">Array roots</th><td>Append their items<br><code>[A,B] + C → [A,B,C]</code></td><td class="array-root-issue"><span role="img" aria-label="Issue">⚠</span> Different array-root handling<br><code>[A,B] + C → [[A,B],C]</code></td></tr>
+                <tr><th scope="row">Blank-node IDs</th><td>Shared within the resulting document</td><td>Shared within the resulting document</td></tr>
+            </tbody>
+        </table>
+        <p class="example-caption">HTML comparison assumes no fragment or profile selects a specific script.</p>
+        <aside>The YAML-LD column describes the live editor's draft, checked
+            17 October 2026. Shared blank-node identity follows processing the
+            aggregate as one JSON-LD document. Array-root handling differs at
+            construction, even where later expansion removes array nesting.
+            This table does not incorporate pending local specification edits.</aside>
+    </section>
+
+    <section class="slide" id="blank-node-scope">
+        <h2>Blank-node scope</h2>
+        <p class="slide-source"><a href="https://www.w3.org/TR/json-ld11/#identifying-blank-nodes">JSON-LD · blank-node identifiers</a></p>
+        <p class="variant-label">Both observations use <code>_:reading</code></p>
+        <div class="columns two">
+            <pre class="code-example"><code class="hljs" data-source="examples/blank-one.jsonld"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;@context&quot;</span><span class="hljs-punctuation">:</span>
+    <span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;@vocab&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;https://schema.org/&quot;</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;@type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Observation&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Temperature&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;observationAbout&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Room A<span class="json-escape">\n</span>Bedroom&quot;</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;observationDate&quot;</span><span class="hljs-punctuation">:</span>
+    <span class="hljs-string">&quot;2026-10-17T10:00:00Z&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;value&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">20</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;unitText&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;°C&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;@id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;_:reading&quot;</span>
+<span class="hljs-punctuation">}</span></code></pre>
+            <pre class="code-example"><code class="hljs" data-source="examples/blank-two.jsonld"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;@context&quot;</span><span class="hljs-punctuation">:</span>
+    <span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;@vocab&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;https://schema.org/&quot;</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;@type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Observation&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Temperature&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;observationAbout&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Room A<span class="json-escape">\n</span>Bedroom&quot;</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;observationDate&quot;</span><span class="hljs-punctuation">:</span>
+    <span class="hljs-string">&quot;2026-10-17T10:01:00Z&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;value&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">21</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;unitText&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;°C&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;@id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;_:reading&quot;</span>
+<span class="hljs-punctuation">}</span></code></pre>
+        </div>
+        <p class="scope-result">Chained: one observation · processed separately: two observations</p>
+        <aside>Only the explicit observation IDs change. The bedroom, timestamps,
+            values, units and context match the canonical example. The nested room
+            nodes are not observation nodes. This compares RDF identity, not the
+            number of expanded JSON objects. Preserve independent blank-node scopes
+            if separately processed RDF outputs are later combined.</aside>
+    </section>
+
+    <section class="slide" id="yaml-parser-api">
+        <h2>YAML library APIs</h2>
+        <p class="slide-source"><a href="https://yaml.org/spec/1.2.2/#31-processes">YAML model</a></p>
+        <table class="library-comparison">
+            <thead><tr><th scope="col">Library</th><th scope="col">Function</th><th scope="col">1 doc</th><th scope="col">2+ docs</th><th scope="col">Behavior</th></tr></thead>
+            <tbody><tr><td rowspan="2"><a href="https://yaml.dev/doc/ruamel.yaml/api/"><img class="language-icon" src="python.svg" alt="Python"> ruamel.yaml</a></td><th scope="row"><code>YAML().load()</code></th><td class="supported">✓</td><td class="unsupported">✗</td><td>Rejects a second document</td></tr>
+<tr><th scope="row"><code>YAML().load_all()</code></th><td class="supported">✓</td><td class="supported">✓</td><td>Lazy generator</td></tr>
+<tr><td rowspan="2"><a href="https://pyyaml.org/wiki/PyYAMLDocumentation"><img class="language-icon" src="python.svg" alt="Python"> PyYAML</a></td><th scope="row"><code>safe_load()</code></th><td class="supported">✓</td><td class="unsupported">✗</td><td>Rejects a second document</td></tr>
+<tr><th scope="row"><code>safe_load_all()</code></th><td class="supported">✓</td><td class="supported">✓</td><td>Lazy generator</td></tr>
+<tr><td rowspan="2"><a href="https://github.com/nodeca/js-yaml"><img class="language-icon" src="javascript.svg" alt="JavaScript"> js-yaml</a></td><th scope="row"><code>load()</code></th><td class="supported">✓</td><td class="unsupported">✗</td><td>Rejects a second document</td></tr>
+<tr><th scope="row"><code>loadAll()</code></th><td class="supported">✓</td><td class="supported">✓</td><td>Array / synchronous callback</td></tr></tbody>
+        </table>
+        <p class="example-caption">YAML defines loading, not programming-language function signatures.</p>
+        <aside>ruamel.yaml entries denote methods on a YAML instance. Verified:
+            ruamel.yaml 0.19.1, PyYAML 6.0.1, js-yaml 5.5.0. Python generators
+            construct documents during iteration. js-yaml accepts multiple documents
+            but returns an array or invokes a synchronous callback; neither is an
+            asynchronous input-stream API. next(load_all(...)) selects one document.</aside>
+    </section>
+
+<section class="slide clear chapter-title" id="streaming-api-chapter">
+        <h2 class="shout">Streaming API?</h2>
+    </section>
+
+    <section class="slide" id="expansion-api">
+        <h2>JSON-LD 1.1 · <code>expand()</code></h2>
+        <p class="slide-source"><a href="https://www.w3.org/TR/json-ld11-api/#the-jsonldprocessor-interface">JSON-LD 1.1 API</a></p>
+        <pre class="code-example"><code class="hljs" data-source="examples/expansion-api.webidl"><span class="hljs-keyword">typedef</span> record&lt;<span class="hljs-built_in">USVString</span>, any&gt; <span class="hljs-built_in">JsonLdRecord</span>;
+<span class="hljs-keyword">partial</span> <span class="hljs-keyword">interface</span> JsonLdProcessor {
+  <span class="hljs-keyword">static</span> <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">sequence</span>&lt;<span class="hljs-built_in">JsonLdRecord</span>&gt;&gt; expand(
+    <span class="hljs-built_in">JsonLdInput</span> input, <span class="hljs-keyword">optional</span> <span class="hljs-built_in">JsonLdOptions</span> options = {});
+};</code></pre>
+        <p class="example-caption"><code>JsonLdRecord</code>: object fields may contain arrays.<br><code>sequence&lt;JsonLdRecord&gt;</code>: the result array.</p>
+    </section>
+
+    <section class="slide" id="shared-streaming-api">
+        <h2>Proposed · <code>expandStream()</code></h2>
+        <p class="slide-source"><a href="https://www.w3.org/TR/json-ld11-api/#the-jsonldprocessor-interface">JSON-LD 1.1 API types</a> · <a href="https://webidl.spec.whatwg.org/#idl-async-iterable">Web IDL</a></p>
+        <pre class="code-example"><code class="hljs" data-source="examples/streaming-api-proposal.webidl"><span class="hljs-keyword">typedef</span> (<span class="hljs-built_in">JsonLdRecord</span> or <span class="hljs-built_in">sequence</span>&lt;<span class="hljs-built_in">JsonLdRecord</span>&gt;)? <span class="hljs-built_in">JsonLdDocument</span>;
+<span class="hljs-keyword">typedef</span> (<span class="hljs-built_in">USVString</span> or <span class="hljs-built_in">sequence</span>&lt;<span class="hljs-built_in">JsonLdDocument</span>&gt;) <span class="hljs-built_in">JsonLdStreamInput</span>;
+<span class="hljs-meta">[Exposed=JsonLd]</span>
+<span class="hljs-keyword">interface</span> <span class="hljs-built_in">ExpandedDocumentStream</span> {
+  <span class="hljs-keyword">async_iterable</span>&lt;<span class="hljs-built_in">sequence</span>&lt;<span class="hljs-built_in">JsonLdRecord</span>&gt;&gt;;
+};
+<span class="hljs-keyword">partial</span> <span class="hljs-keyword">interface</span> JsonLdProcessor {
+  <span class="hljs-keyword">static</span> <span class="hljs-built_in">ExpandedDocumentStream</span> expandStream(
+    <span class="hljs-built_in">JsonLdStreamInput</span> input,
+    <span class="hljs-keyword">optional</span> <span class="hljs-built_in">JsonLdOptions</span> options = {});
+};</code></pre>
+        <p class="example-caption">URL or document array · each item expands independently.</p>
+        <aside>Proposal, not an implemented API. JsonLdDocument and JsonLdStreamInput are proposed typedefs; JsonLdRecord and JsonLdOptions come from JSON-LD 1.1. Input may be a URL identifying a document stream, or an array whose items are individual documents. Each item is an object, an array of objects, or null. [] supplies zero documents; [null] supplies one document yielding []; [[A, B]] supplies one array-valued document yielding expand([A, B]). Thus [A, B] yields expand(A), then expand(B), with independent context and blank-node scope. A nested document array is not flattened into the outer document stream. Empty results are preserved. Errors reject the pending iteration; cancellation remains open.</aside>
+    </section>
+
+    <section class="slide" id="streaming-operations">
+        <h2>Possible streaming operations</h2>
+        <p class="slide-source"><a href="https://www.w3.org/TR/json-ld11-api/#the-jsonldprocessor-interface">JSON-LD 1.1 API</a> · <a href="https://www.w3.org/TR/json-ld11-framing/#the-jsonldprocessor-interface">Framing</a></p>
+        <div class="operation-cards">
+            <div class="operation-card"><h3><code>expandStream()</code></h3><p>Each document → expanded array</p></div>
+            <div class="operation-card"><h3><code>compactStream()</code></h3><p>Each document + context → compacted document</p></div>
+            <div class="operation-card"><h3><code>flattenStream()</code></h3><p>Each document → flattened graph</p></div>
+            <div class="operation-card"><h3><code>frameStream()</code></h3><p>Each document + frame → framed document</p></div>
+            <div class="operation-card"><h3><code>toRdfStream()</code></h3><p>Each document → RDF dataset</p></div>
+            <div class="operation-card"><h3><code>fromRdfStream()</code></h3><p>Each RDF dataset → JSON-LD</p></div>
+        </div>
+        <aside>These are candidate operation names, not identical signatures.
+            Compact needs a context; frame needs a frame. fromRdf consumes RDF
+            dataset messages, while the other methods consume JSON-LD-compatible
+            documents. Cross-document framing or flattening would require a
+            different contract and buffering. They are not implied here.</aside>
+    </section>
+
+    <section class="slide" id="cg-questions">
+        <h2>Proposals</h2>
+        <p class="slide-source"><a href="https://github.com/w3c/yaml-ld/issues/254"><img class="github-mark" src="github-mark.svg" alt="GitHub"> w3c/yaml-ld#254</a></p>
+        <div class="proposal-cards">
+            <div class="proposal-card"><h3><span class="proposal-reject" role="img" aria-label="Remove">✗</span> <code>extractAllScripts</code></h3><p>@ YAML-LD</p></div>
+            <div class="proposal-card"><h3><code>expand()</code></h3><p>Reads only the first document</p></div>
+            <div class="proposal-card"><h3>Streaming API!</h3></div>
+        </div>
+    </section>
+
+    <section class="slide" id="context-scope">
+        <h2>Context scope</h2>
+        <p class="slide-source"><a href="https://www.w3.org/TR/json-ld11-api/#expansion-algorithm">JSON-LD expansion</a></p>
+        <pre class="code-example"><code class="hljs" data-source="examples/context-scope.yamlld"><span class="hljs-attr">&quot;@context&quot;:</span> {<span class="hljs-string">&quot;@vocab&quot;</span><span class="hljs-string">:&quot;https://schema.org/&quot;</span>}
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">&quot;@type&quot;:</span> <span class="hljs-string">&quot;Observation&quot;</span>
+<span class="hljs-attr">name:</span> <span class="hljs-string">&quot;Temperature&quot;</span>
+<span class="hljs-attr">observationAbout:</span> {<span class="hljs-string">&quot;name&quot;</span><span class="hljs-string">:&quot;Room</span> <span class="hljs-string">A<span class="json-escape">\n</span>Bedroom&quot;</span>}
+<span class="hljs-attr">observationDate:</span> <span class="hljs-string">&quot;2026-10-17T10:00:00Z&quot;</span>
+<span class="hljs-attr">value:</span> <span class="hljs-number">20</span>
+<span class="hljs-attr">unitText:</span> <span class="hljs-string">&quot;°C&quot;</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">&quot;@type&quot;:</span> <span class="hljs-string">&quot;Observation&quot;</span>
+<span class="hljs-attr">name:</span> <span class="hljs-string">&quot;Temperature&quot;</span>
+<span class="hljs-attr">observationAbout:</span> {<span class="hljs-string">&quot;name&quot;</span><span class="hljs-string">:&quot;Room</span> <span class="hljs-string">A<span class="json-escape">\n</span>Bedroom&quot;</span>}
+<span class="hljs-attr">observationDate:</span> <span class="hljs-string">&quot;2026-10-17T10:01:00Z&quot;</span>
+<span class="hljs-attr">value:</span> <span class="hljs-number">21</span>
+<span class="hljs-attr">unitText:</span> <span class="hljs-string">&quot;°C&quot;</span></code></pre>
+        <p class="scope-result">Context moved to the first document: names, times, readings, and units lose their mappings.</p>
+        <p class="context-profile"><a href="https://w3c-cg.github.io/rsp/spec/messages#json-ld">RDF Messages §2.2</a>: NDJSON-LD carries the active context forward until replaced.</p>
+        <aside>This is the canonical pair with the context moved from each
+            observation into an initial context-only document. All other fields are
+            unchanged. A sibling's context does not apply to later array items.
+            With a URL base, the relative @type value resolves against that URL;
+            it does not resolve to schema:Observation. Independent expansion has
+            the same context problem. The RDF Messages NDJSON-LD
+            profile has a separate, explicit rule carrying the context forward.</aside>
+    </section>
+
+    <section class="slide" id="pr-review">
+        <h2>Please review</h2>
+        <div class="review-links">
+            <p><a href="https://github.com/w3c/json-ld-syntax/pull/502"><img class="github-mark" src="github-mark.svg" alt="GitHub"> w3c/json-ld-syntax#502</a><br><span>Allow null roots</span></p>
+            <p><a href="https://github.com/w3c/yaml-ld/pull/256"><img class="github-mark" src="github-mark.svg" alt="GitHub"> w3c/yaml-ld#256</a><br><span>Empty YAML documents and null roots</span></p>
+            <p><a href="https://github.com/w3c/yaml-ld/pull/255"><img class="github-mark" src="github-mark.svg" alt="GitHub"> w3c/yaml-ld#255</a><br><span>Blank-node scope</span></p>
+        </div>
+    </section>
+
+    <div class="progress"></div>
+    <script src="shower/shower.js"></script>
+    <script src="mermaid.tiny.js"></script>
+    <script src="diagrams.js"></script>
+</body>
+</html>
