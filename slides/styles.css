@@ -1,0 +1,246 @@
+.shower {
+    --slide-ratio: calc(16 / 9);
+}
+
+.slide > aside {
+    display: none;
+}
+
+#title .shout {
+    font-size: 96px;
+}
+
+#title .byline {
+    position: absolute;
+    right: var(--slide-side);
+    bottom: 42px;
+    left: var(--slide-side);
+    text-align: center;
+    font-size: 24px;
+}
+
+.slide .columns h3 {
+    margin: 0 0 12px;
+    font-size: 32px;
+}
+
+.slide .code-example {
+    margin-bottom: 18px;
+}
+
+.slide .code-example code {
+    margin-left: 0;
+    padding: 0;
+    width: 100%;
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+.slide .example-caption {
+    margin-bottom: 16px;
+    font-size: 22px;
+    line-height: 1.4;
+}
+
+#json-stream-formats .format-comparison {
+    margin-left: 0;
+    width: 100%;
+    font-size: 22px;
+    line-height: 1.4;
+}
+
+#json-stream-formats .format-comparison th,
+#json-stream-formats .format-comparison td {
+    padding: 12px 16px 12px 0;
+    vertical-align: top;
+}
+
+
+#rdf-messages > p.note,
+.streaming-jsonld-example > p.example-caption:last-of-type {
+    margin-bottom: 0;
+}
+
+.slide pre code.hljs { background: transparent; overflow: visible; }
+.streaming-jsonld-example .code-example code { line-height: 1.25; }
+#state-of-the-art .code-example { margin-bottom: 20px; }
+.format-comparison .supported, .library-comparison .supported { color: #1a7f37; font-size: 28px; }
+.format-comparison .unsupported, .library-comparison .unsupported { color: #cf222e; font-size: 28px; }
+
+#rdf-message-backends ul { font-size: 23px; line-height: 1.65; }
+#rdf-message-backends small { font-size: 19px; }
+.streaming-jsonld-example > .example-caption:first-of-type { font-size: 19px; line-height: 1.3; }
+#json-stream-formats .format-comparison { font-size: 20px; }
+#json-stream-formats .format-comparison code { font-size: 17px; }
+#json-stream-formats .format-comparison small { font-size: 17px; }
+#json-stream-formats .example-caption { font-size: 20px; }
+#state-of-the-art .line-feed { color: #a13c00; background: #fff1dd; margin-left: 6px; }
+#state-of-the-art .line-feed-legend { font-size: 20px; }
+
+#state-of-the-art .json-escape { color: #8250df; background: #f3e8ff; font-weight: bold; }
+
+#json-stream-formats .control-character { color: #a13c00; background: #fff1dd; }
+
+#json-stream-formats > .example-caption { margin-bottom: 0; }
+
+#rdf-messages .code-example code { font-size: 18px; line-height: 1.15; }
+
+#json-stream-formats .format-comparison { table-layout: fixed; }
+#json-stream-formats .format-comparison thead th { font-size: 18px; }
+
+#rdf-message-serializations .serialization-comparison { margin-left: 0; width: 100%; font-size: 23px; line-height: 1.35; }
+#rdf-message-serializations .serialization-comparison th,
+#rdf-message-serializations .serialization-comparison td { padding: 10px 18px 10px 0; vertical-align: top; }
+#rdf-message-serializations .serialization-comparison th:first-child { width: 42%; }
+
+#rdf-message-backends .transport-cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+#rdf-message-backends .transport-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 132px;
+    padding: 16px 24px;
+    box-sizing: border-box;
+    border: 1px solid #cbd9e7;
+    border-left: 5px solid #4b86c2;
+    background: #f4f8fc;
+    font-size: 28px;
+    line-height: 1.5;
+}
+#rdf-message-backends .transport-card br { display: none; }
+
+#rdf-message-backends .transport-card a { align-self: flex-start; }
+
+#yaml-document-streams .code-example code { line-height: 1.2; }
+#yaml-parser-api .code-example code { font-size: 19px; line-height: 1.15; }
+.processing-comparison, .outcome-comparison { margin-left: 0; width: 100%; font-size: 22px; line-height: 1.3; }
+.processing-comparison th, .processing-comparison td, .outcome-comparison th, .outcome-comparison td { padding: 10px 14px 10px 0; vertical-align: top; }
+.processing-comparison th:first-child { width: 22%; }
+.processing-comparison td { width: 39%; }
+.processing-comparison code { font-size: 18px; }
+#extract-all-scripts .example-caption { font-size: 18px; margin-bottom: 0; }
+#extract-all-scripts h2 code { font-size: 42px; }
+#blank-node-scope .code-example code, #empty-messages .code-example code { font-size: 21px; line-height: 1.25; }
+.outcome-comparison th { width: 29%; }
+#context-scope .discussion-question { font-weight: bold; }
+#shared-streaming-api ul { font-size: 25px; line-height: 1.65; }
+#cg-questions ol { font-size: 27px; line-height: 1.6; }
+
+.slide .processing-comparison, .slide .outcome-comparison { margin-left: 0; width: 100%; }
+.slide .processing-comparison { table-layout: fixed; font-size: 20px; line-height: 1.2; }
+.slide .processing-comparison th, .slide .processing-comparison td { padding: 7px 12px 7px 0; }
+#extract-all-scripts .processing-comparison code { font-size: 17px; }
+
+.slide .outcome-comparison th:first-child { padding-left: 0; }
+
+/* Source placement is consistent across all slides. */
+.slide .slide-source {
+    position: absolute; top: auto; right: var(--slide-side);
+    bottom: 24px; max-width: 824px; margin: 0;
+}
+.slide h2 code { font-size: 0.84em; background: transparent; padding: 0; }
+.slide .json-escape { color: #8250df; background: #f3e8ff; font-weight: bold; }
+.streaming-jsonld-example .code-example code { font-size: 19px; line-height: 1.15; }
+#rdf-messages .code-example code { font-size: 17px; line-height: 1.1; }
+#state-of-the-art .code-example code { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 18px; line-height: 1.3; }
+#yaml-document-streams .code-example code { font-size: 19px; line-height: 1.15; }
+#yaml-parser-api .library-comparison { margin-left: 0; width: 100%; font-size: 20px; line-height: 1.3; }
+#yaml-parser-api .library-comparison th, #yaml-parser-api .library-comparison td { padding: 9px 12px 9px 0; vertical-align: top; }
+#yaml-parser-api .library-comparison th:first-child { width: 35%; }
+#yaml-parser-api .library-comparison code { font-size: 17px; }
+#yaml-parser-api .example-caption { font-size: 20px; margin-bottom: 0; }
+.array-root-issue { background: #fff5df; }
+.array-root-issue [role="img"] { color: #996600; }
+.slide .variant-label { font-size: 20px; line-height: 1.3; margin-bottom: 12px; }
+#blank-node-scope .columns.two { gap: 40px; }
+#blank-node-scope .code-example code { font-size: 16px; line-height: 1.1; }
+#blank-node-scope .scope-result { font-size: 22px; line-height: 1.3; margin-bottom: 0; }
+#context-scope .code-example code { font-size: 17px; line-height: 1.15; }
+#context-scope .scope-result { font-size: 21px; line-height: 1.3; margin-bottom: 0; }
+#empty-messages .code-example code { font-size: 18px; line-height: 1.2; white-space: pre-wrap; overflow-wrap: anywhere; }
+#shared-streaming-api .example-caption { font-size: 20px; line-height: 1.4; margin-bottom: 0; }
+#streaming-operations .operation-cards { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; margin-bottom: 22px; }
+#streaming-operations .operation-card { padding: 16px; min-height: 135px; box-sizing: border-box; background: #f4f8fc; border-left: 4px solid #4b86c2; }
+#streaming-operations h3 { font-size: 23px; margin: 0 0 12px; line-height: 1.2; }
+#streaming-operations h3 code { font-size: 19px; padding: 0; background: transparent; }
+#streaming-operations .operation-card p { font-size: 19px; line-height: 1.35; margin: 0; }
+#streaming-operations .example-caption { font-size: 19px; margin-bottom: 0; }
+#cg-questions ol { font-size: 26px; line-height: 1.6; }
+#cg-questions .discussion-question { font-size: 22px; line-height: 1.4; margin-bottom: 0; }
+
+#empty-messages .outcome-comparison { margin-bottom: 0; }
+#yaml-parser-api .library-comparison small { font-size: 14px; font-weight: normal; }
+
+#null-roots > p:not(.slide-source) { font-size: 23px; line-height: 1.4; margin-bottom: 16px; }
+#null-roots > .note { font-size: 20px; margin-bottom: 0; }
+
+.slide .slide-source, .slide .implementation-links {
+    font-family: "PT Sans", sans-serif; font-size: 16px;
+    font-weight: 400; font-style: normal; line-height: 1.3; text-align: right;
+}
+.github-mark { width: 20px; height: 20px; vertical-align: -3px; }
+
+.language-icon { width: 22px; height: 22px; vertical-align: -4px; }
+#yaml-parser-api .library-comparison { table-layout: fixed; font-size: 19px; }
+#yaml-parser-api .library-comparison th, #yaml-parser-api .library-comparison td { padding: 10px 8px 10px 0; }
+#yaml-parser-api .library-comparison th:first-child { width: 19%; }
+#yaml-parser-api .library-comparison th:nth-child(2) { width: 25%; }
+#yaml-parser-api .library-comparison th:nth-child(3) { width: 8%; }
+#yaml-parser-api .library-comparison th:nth-child(4) { width: 11%; }
+#yaml-parser-api .library-comparison code { font-size: 16px; white-space: nowrap; }
+#context-scope .context-profile { font-size: 18px; line-height: 1.3; margin: 12px 0 0; }
+#context-scope .scope-result { margin-bottom: 0; }
+
+/* Reserve footer space for source references on content-heavy slides. */
+#rdf-messages h2, #empty-messages h2 { margin-bottom: 0; }
+#context-scope h2, #shared-streaming-api h2 { margin-bottom: 10px; }
+
+#expansion-api .code-example code, #shared-streaming-api .code-example code { font-size: 22px; line-height: 1.3; }
+#expansion-api .example-caption { font-size: 22px; line-height: 1.5; }
+#null-roots .mermaid, #null-root-prs .mermaid { margin: 0 0 24px; padding: 0; width: 100%; text-align: center; }
+#null-roots .null-conversion svg { width: 100%; max-height: 125px; }
+#null-root-prs .null-pr-stack svg { width: 100%; max-height: 185px; }
+
+.chapter-title .shout { font-size: 96px; }
+.scope-cross { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.scope-cross path { fill: none; stroke: #d00000; stroke-opacity: 0.32; stroke-width: 24; stroke-linecap: round; }
+
+.mermaid svg a { cursor: pointer; pointer-events: auto; }
+
+#yaml-parser-api .library-comparison td[rowspan] { vertical-align: middle; }
+
+#null-root-prs .null-pr-stack { margin-top: 50px; }
+#null-root-prs .null-pr-stack svg { max-height: 300px; }
+
+#yaml-document-streams h2 { margin-bottom: 10px; }
+
+#cg-questions .proposal-cards { display: grid; gap: 18px; }
+#cg-questions .proposal-card { display: flex; align-items: center; gap: 24px; min-height: 90px; box-sizing: border-box; padding: 18px 24px; background: #f4f8fc; border-left: 4px solid #4b86c2; }
+#cg-questions .proposal-card h3 { font-size: 28px; line-height: 1.25; margin: 0; }
+#cg-questions .proposal-card h3 code { font-size: 26px; background: transparent; padding: 0; }
+#cg-questions .proposal-card p { font-size: 25px; line-height: 1.3; margin: 0; }
+.proposal-reject { color: #cf222e; }
+
+#rdf-messages-chapter .chapter-thanks { position: absolute; top: calc(50% + 75px); left: var(--slide-side); right: var(--slide-side); margin: 0; text-align: center; font-size: 28px; line-height: 1.5; }
+#rdf-messages-chapter .chapter-thanks span { font-size: 23px; }
+
+#state-of-the-art .proposal-note { font-size: 18px; }
+
+#pr-review .review-links { display: grid; gap: 22px; }
+#pr-review .review-links p { margin: 0; font-size: 27px; line-height: 1.35; }
+#pr-review .review-links span { font-size: 22px; }
+
+#jsonld-null-proposal .null-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+#jsonld-null-proposal .null-comparison > div { min-height: 300px; padding: 22px; box-sizing: border-box; border-left: 5px solid; }
+#jsonld-null-proposal .null-algorithm { background: #edf8ef; border-color: #1a7f37; }
+#jsonld-null-proposal .null-grammar { background: #fff0f0; border-color: #cf222e; }
+#jsonld-null-proposal .null-comparison h3 { margin: 0 0 18px; font-size: 29px; }
+#jsonld-null-proposal .null-comparison p { margin: 0 0 16px; font-size: 22px; line-height: 1.4; }
+#jsonld-null-proposal .null-comparison .null-mapping { font-size: 35px; margin: 30px 0; }
+#jsonld-null-proposal blockquote { margin: 0 0 18px; font-size: 21px; line-height: 1.35; font-style: normal; }
+#jsonld-null-proposal blockquote::before, #jsonld-null-proposal blockquote::after { content: none; }
+#jsonld-null-proposal .null-grammar a { font-size: 20px; overflow-wrap: anywhere; }
