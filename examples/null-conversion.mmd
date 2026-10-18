@@ -1,0 +1,4 @@
+flowchart LR
+  document["Empty YAML document<br/>--- ..."] -->|construct| value["null"]
+  value -->|expand| expanded["[]"]
+  expanded -->|to RDF| dataset["Empty dataset"]
