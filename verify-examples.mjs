@@ -1,0 +1,21 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { load, loadAll } from "js-yaml";
+import { parse, validate } from "webidl2";
+const root = new URL("./examples/", import.meta.url);
+const input = readFileSync(new URL("readings.yamlld", root), "utf8");
+const {context, observations} = JSON.parse(readFileSync(new URL("running-example.json", root)));
+const expected = observations.map(item => ({"@context":context, ...item}));
+assert.deepEqual(load(readFileSync(new URL("message-one.jsonld", root), "utf8")), expected[0]);
+assert.throws(() => load(input));
+assert.deepEqual(loadAll(input), expected);
+const received = [];
+assert.equal(loadAll(input, value => received.push(value)), undefined);
+assert.deepEqual(received, expected);
+const idl = ["expansion-api.webidl", "streaming-api-proposal.webidl"].map(path => readFileSync(new URL(path, root), "utf8")).join("\n");
+// Imported types are supplied here to validate the extension in isolation.
+const imports = `[Global=JsonLd,Exposed=JsonLd] interface JsonLd {};
+typedef any JsonLdInput;
+dictionary JsonLdOptions {}; [Exposed=JsonLd] interface JsonLdProcessor {};`;
+assert.deepEqual(validate(parse(imports + idl)), []);
+console.log("js-yaml array/callback behavior and proposed WebIDL syntax verified.");
