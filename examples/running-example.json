@@ -1,0 +1,27 @@
+{
+  "context": {
+    "@vocab": "https://schema.org/"
+  },
+  "observations": [
+    {
+      "@type": "Observation",
+      "name": "Temperature",
+      "observationAbout": {
+        "name": "Room A\nBedroom"
+      },
+      "observationDate": "2026-10-17T10:00:00Z",
+      "value": 20,
+      "unitText": "°C"
+    },
+    {
+      "@type": "Observation",
+      "name": "Temperature",
+      "observationAbout": {
+        "name": "Room A\nBedroom"
+      },
+      "observationDate": "2026-10-17T10:01:00Z",
+      "value": 21,
+      "unitText": "°C"
+    }
+  ]
+}
