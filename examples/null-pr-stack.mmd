@@ -1,0 +1,6 @@
+flowchart LR
+  jsonld["●  w3c/json-ld-syntax#502<br/>Null roots"] -->|enables| yaml["●  w3c/yaml-ld#256<br/>Null roots"]
+  yaml -->|base for| scope["●  w3c/yaml-ld#255<br/>Blank-node scope"]
+  click jsonld "https://github.com/w3c/json-ld-syntax/pull/502" "Open JSON-LD grammar PR" _blank
+  click yaml "https://github.com/w3c/yaml-ld/pull/256" "Open YAML-LD null support PR" _blank
+  click scope "https://github.com/w3c/yaml-ld/pull/255" "Open stacked blank-node scope PR" _blank
